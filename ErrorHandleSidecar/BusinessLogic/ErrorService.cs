@@ -7,9 +7,18 @@ namespace ErrorHandleSidecar.BusinessLogic
 {
     public class ErrorService : IErrorService
     {
+        private IConfiguration _configuration;
+
+        public ErrorService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task<ErrorResponse> GetErrorResponse(ErrorRequest request)
         {
-            var errorSchema = await GetErrorSchema();
+            var errorSchemaFilePath = _configuration.GetValue<string>("ErrorSchemaPath");
+
+            var errorSchema = await GetErrorSchema(errorSchemaFilePath);
             if (errorSchema == null) return new ErrorResponse { ErrorMessage = "Error: Unable to read the error schema." };
 
             var errorDescription = errorSchema.FirstOrDefault(x =>
@@ -31,11 +40,10 @@ namespace ErrorHandleSidecar.BusinessLogic
         }
 
 
-        private static async Task<List<ErrorSchema>?> GetErrorSchema()
+        private static async Task<List<ErrorSchema>?> GetErrorSchema(string errorSchemaFilePath)
         {
             var errorSchema = new List<ErrorSchema>();
-
-            using var reader = new StreamReader("Schemas/error-schema.json");
+            using var reader = new StreamReader(errorSchemaFilePath);
             if (reader.Peek() != 0)
             {
                 errorSchema = JsonConvert.DeserializeObject<List<ErrorSchema>>(await reader.ReadToEndAsync());
