@@ -10,7 +10,8 @@ var errorRequest = new ErrorRequest { ErrorCode = "1002" };
 
 var reply = await client.GetErrorResponseAsync(errorRequest);
 
-Console.WriteLine("Greeting: " + reply.ToString());
+Console.WriteLine($"Response: {reply}");
+
 Console.WriteLine("Press any key to exit...");
 
 Console.ReadKey();
