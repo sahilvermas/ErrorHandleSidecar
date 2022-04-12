@@ -15,13 +15,14 @@
     "errorCode": "1002",
     "name": "Technical Error",
     "errorMessage": "Already Exist Error",
-    "canRetry": false
+    "canRetry": true
   },
   {
     "errorCode": "1003",
     "name": "Technical Error",
     "errorMessage": "Retry Error",
     "canRetry": true,
-    "noOfRetries": 3
+    "noOfRetries": 3,
+    "requestId": "ASDFGHJUIKLJHGFDF"
   }
 ]

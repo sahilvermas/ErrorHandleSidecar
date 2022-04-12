@@ -13,10 +13,10 @@ message ErrorRequest {
 }
 
 message ErrorResponse {
-	string name = 1;
-	string errorMessage = 2;
-	bool canRetry =3;
-	int32 noOfRetries = 4;
+	string errorCode = 1;
+	string name = 2;
+	string errorMessage = 3;
+	bool canRetry = 4;
+	int32 noOfRetries = 5;
 	string requestId = 6;
-	string errorCode = 7;
 }

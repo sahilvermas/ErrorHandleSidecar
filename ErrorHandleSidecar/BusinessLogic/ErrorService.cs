@@ -28,19 +28,7 @@ namespace ErrorHandleSidecar.BusinessLogic
                                        x.ErrorCode != null && x.ErrorCode.Equals(request.ErrorCode))
                                    ?? errorSchema.First(x => x.ErrorCode is "1");
 
-            //var dd = _mapper.Map<ErrorResponse>(errorDescription);
-
-            var errorResponse = new ErrorResponse()
-            {
-                ErrorCode = errorDescription.ErrorCode,
-                ErrorMessage = errorDescription.ErrorMessage,
-                CanRetry = errorDescription.CanRetry,
-                Name = errorDescription.Name,
-                NoOfRetries = errorDescription.NoOfRetries,
-                RequestId = string.IsNullOrEmpty(errorDescription.RequestId) ? "0" : errorDescription.RequestId,
-            };
-
-            return errorResponse;
+            return _mapper.Map<ErrorResponse>(errorDescription);
         }
 
 

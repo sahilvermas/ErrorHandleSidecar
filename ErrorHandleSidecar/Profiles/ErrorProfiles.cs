@@ -7,7 +7,12 @@ namespace ErrorHandleSidecar.Profiles
     {
         public ErrorProfiles()
         {
-            CreateMap<ErrorSchema, Protos.ErrorResponse>().ReverseMap();
+            CreateMap<ErrorSchema, Protos.ErrorResponse>()
+                .ForAllMembers(
+                    options =>
+                        options.Condition((_, _, srcValue) => srcValue != null)
+                );
+
         }
     }
 }
