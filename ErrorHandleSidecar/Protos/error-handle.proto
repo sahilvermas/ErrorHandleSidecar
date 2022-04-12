@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "ErrorHandleSidecar.Protos";
+
+package errorhandler;
+
+service ErrorHandler {
+	rpc GetErrorResponse(ErrorRequest) returns (ErrorResponse);
+}
+
+message ErrorRequest {
+	string errorCode = 1;
+}
+
+message ErrorResponse {
+	string message = 1;
+}
