@@ -22,6 +22,6 @@
     "name": "Technical Error",
     "errorMessage": "Retry Error",
     "canRetry": true,
-    "noOfRetry": 3
+    "noOfRetries": 3
   }
 ]

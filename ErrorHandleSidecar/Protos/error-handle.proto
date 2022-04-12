@@ -17,7 +17,6 @@ message ErrorResponse {
 	string errorMessage = 2;
 	bool canRetry =3;
 	int32 noOfRetries = 4;
-	string time = 5;
 	string requestId = 6;
 	string errorCode = 7;
 }

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using AutoMapper;
 using ErrorHandleSidecar.Models;
 using ErrorHandleSidecar.Protos;
 using Newtonsoft.Json;
@@ -7,11 +8,13 @@ namespace ErrorHandleSidecar.BusinessLogic
 {
     public class ErrorService : IErrorService
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public ErrorService(IConfiguration configuration)
+        public ErrorService(IConfiguration configuration, IMapper mapper)
         {
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<ErrorResponse> GetErrorResponse(ErrorRequest request)
@@ -25,15 +28,16 @@ namespace ErrorHandleSidecar.BusinessLogic
                                        x.ErrorCode != null && x.ErrorCode.Equals(request.ErrorCode))
                                    ?? errorSchema.First(x => x.ErrorCode is "1");
 
+            //var dd = _mapper.Map<ErrorResponse>(errorDescription);
+
             var errorResponse = new ErrorResponse()
             {
                 ErrorCode = errorDescription.ErrorCode,
                 ErrorMessage = errorDescription.ErrorMessage,
                 CanRetry = errorDescription.CanRetry,
                 Name = errorDescription.Name,
-                NoOfRetries = errorDescription.NoOfRetry,
+                NoOfRetries = errorDescription.NoOfRetries,
                 RequestId = string.IsNullOrEmpty(errorDescription.RequestId) ? "0" : errorDescription.RequestId,
-                Time = DateTime.Now.ToString(CultureInfo.InvariantCulture)
             };
 
             return errorResponse;
