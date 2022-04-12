@@ -1,0 +1,27 @@
+[
+  {
+    "errorCode": "1",
+    "name": "Default Error",
+    "errorMessage": "The error is not defined ",
+    "canRetry": false
+  },
+  {
+    "errorCode": "1001",
+    "name": "Technical Error",
+    "errorMessage": "Validation Error",
+    "canRetry": false
+  },
+  {
+    "errorCode": "1002",
+    "name": "Technical Error",
+    "errorMessage": "Already Exist Error",
+    "canRetry": false
+  },
+  {
+    "errorCode": "1003",
+    "name": "Technical Error",
+    "errorMessage": "Retry Error",
+    "canRetry": true,
+    "noOfRetry": 3
+  }
+]
