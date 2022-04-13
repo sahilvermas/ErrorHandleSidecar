@@ -1,7 +1,8 @@
-﻿namespace ErrorHandleSidecar.BusinessLogic
+﻿using ErrorHandleSidecar.Protos;
+
+namespace ErrorHandleSidecar.BusinessLogic;
+
+public interface IErrorService
 {
-    public interface IErrorService
-    {
-        Task<Protos.ErrorResponse> GetErrorResponse(Protos.ErrorRequest request);
-    }
+    Task<ErrorResponse> GetErrorResponse(ErrorRequest request);
 }

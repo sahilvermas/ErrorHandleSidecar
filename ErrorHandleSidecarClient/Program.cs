@@ -6,7 +6,7 @@ const string baseUrl = "http://localhost:5148";
 using var channel = GrpcChannel.ForAddress(baseUrl);
 var client = new ErrorHandler.ErrorHandlerClient(channel);
 
-var errorRequest = new ErrorRequest { ErrorCode = "1002" };
+var errorRequest = new ErrorRequest { ErrorCode = "10042" };
 
 var reply = await client.GetErrorResponseAsync(errorRequest);
 

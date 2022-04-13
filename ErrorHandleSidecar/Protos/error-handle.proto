@@ -19,4 +19,6 @@ message ErrorResponse {
 	bool canRetry = 4;
 	int32 noOfRetries = 5;
 	string requestId = 6;
+	bool publishToDlq = 7;
+	string category = 8;
 }

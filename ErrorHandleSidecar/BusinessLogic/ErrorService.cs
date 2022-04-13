@@ -1,46 +1,64 @@
-﻿using System.Globalization;
-using AutoMapper;
-using ErrorHandleSidecar.Models;
+﻿using ErrorHandleSidecar.Models;
 using ErrorHandleSidecar.Protos;
-using Newtonsoft.Json;
+using ErrorHandleSidecar.Utilities;
 
-namespace ErrorHandleSidecar.BusinessLogic
+namespace ErrorHandleSidecar.BusinessLogic;
+
+public class ErrorService : IErrorService
 {
-    public class ErrorService : IErrorService
+    private readonly IConfiguration _configuration;
+
+    public ErrorService(IConfiguration configuration)
     {
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
+        _configuration = configuration;
+    }
 
-        public ErrorService(IConfiguration configuration, IMapper mapper)
+    public async Task<ErrorResponse> GetErrorResponse(ErrorRequest request)
+    {
+        var errorSchemaFilePath = _configuration.GetValue<string>("ErrorSchemaPath");
+
+        var errorSchema = await GetErrorSchema(errorSchemaFilePath);
+        if (errorSchema == null) return GetDefaultResponse();
+
+        var err = errorSchema.FirstOrDefault(x =>
+            x.ErrorCode != null && x.ErrorCode.Equals(request.ErrorCode));
+
+        if (err == null) return GetDefaultResponse();
+
+        return new ErrorResponse
         {
-            _configuration = configuration;
-            _mapper = mapper;
-        }
+            ErrorCode = err.ErrorCode,
+            Name = err.Name,
+            ErrorMessage = err.ErrorMessage,
+            CanRetry = err.CanRetry,
+            NoOfRetries = err.NoOfRetries,
+            RequestId = err.RequestId,
+            PublishToDlq = err.PublishToDlq,
+            Category = err.Category
+        };
+    }
 
-        public async Task<ErrorResponse> GetErrorResponse(ErrorRequest request)
+    private static ErrorResponse GetDefaultResponse()
+    {
+        return new ErrorResponse
         {
-            var errorSchemaFilePath = _configuration.GetValue<string>("ErrorSchemaPath");
+            ErrorCode = "1",
+            Name = "Default Error",
+            ErrorMessage = "The error is not defined",
+            CanRetry = false,
+            NoOfRetries = 0,
+            RequestId = "0",
+            PublishToDlq = false,
+            Category = "NA"
+        };
+    }
 
-            var errorSchema = await GetErrorSchema(errorSchemaFilePath);
-            if (errorSchema == null) return new ErrorResponse { ErrorMessage = "Error: Unable to read the error schema." };
 
-            var errorDescription = errorSchema.FirstOrDefault(x =>
-                                       x.ErrorCode != null && x.ErrorCode.Equals(request.ErrorCode))
-                                   ?? errorSchema.First(x => x.ErrorCode is "1");
-
-            return _mapper.Map<ErrorResponse>(errorDescription);
-        }
-
-
-        private static async Task<List<ErrorSchema>?> GetErrorSchema(string errorSchemaFilePath)
-        {
-            var errorSchema = new List<ErrorSchema>();
-            using var reader = new StreamReader(errorSchemaFilePath);
-            if (reader.Peek() != 0)
-            {
-                errorSchema = JsonConvert.DeserializeObject<List<ErrorSchema>>(await reader.ReadToEndAsync());
-            }
-            return errorSchema ?? null;
-        }
+    private static async Task<List<ErrorSchema>?> GetErrorSchema(string errorSchemaFilePath)
+    {
+        var errorSchema = new List<ErrorSchema>();
+        using var reader = new StreamReader(errorSchemaFilePath);
+        if (reader.Peek() != 0) errorSchema = FormatUtil.Deserialize<List<ErrorSchema>>(await reader.ReadToEndAsync());
+        return errorSchema;
     }
 }

@@ -1,21 +1,23 @@
 [
   {
-    "errorCode": "1",
-    "name": "Default Error",
-    "errorMessage": "The error is not defined ",
-    "canRetry": false
-  },
-  {
     "errorCode": "1001",
     "name": "Technical Error",
     "errorMessage": "Validation Error",
-    "canRetry": false
+    "canRetry": true,
+    "noOfRetries": 1,
+    "requestId": "SSS",
+    "publishToDlq": false,
+    "category": "TypeMismatchError"
   },
   {
     "errorCode": "1002",
     "name": "Technical Error",
     "errorMessage": "Already Exist Error",
-    "canRetry": true
+    "canRetry": true,
+    "noOfRetries": 3,
+    "requestId": "DDS",
+    "publishToDlq": false,
+    "category": "SystemError"
   },
   {
     "errorCode": "1003",
@@ -23,6 +25,8 @@
     "errorMessage": "Retry Error",
     "canRetry": true,
     "noOfRetries": 3,
-    "requestId": "ASDFGHJUIKLJHGFDF"
+    "requestId": "DDF-FDFD-FDFE",
+    "publishToDlq": true,
+    "category": "CircuitBreakerError"
   }
 ]

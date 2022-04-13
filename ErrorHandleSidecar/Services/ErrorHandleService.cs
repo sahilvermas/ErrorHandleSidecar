@@ -2,31 +2,30 @@
 using ErrorHandleSidecar.Protos;
 using Grpc.Core;
 
-namespace ErrorHandleSidecar.Services
+namespace ErrorHandleSidecar.Services;
+
+public class ErrorHandleService : ErrorHandler.ErrorHandlerBase
 {
-    public class ErrorHandleService : ErrorHandler.ErrorHandlerBase
+    private readonly IErrorService _errorService;
+    private readonly ILogger<ErrorHandleService> _logger;
+
+
+    public ErrorHandleService(ILogger<ErrorHandleService> logger, IErrorService errorService)
     {
-        private readonly ILogger<ErrorHandleService> _logger;
-        private readonly IErrorService _errorService;
+        _logger = logger;
+        _errorService = errorService;
+    }
 
-
-        public ErrorHandleService(ILogger<ErrorHandleService> logger, IErrorService errorService)
+    public override async Task<ErrorResponse> GetErrorResponse(ErrorRequest request, ServerCallContext context)
+    {
+        try
         {
-            _logger = logger;
-            _errorService = errorService;
+            return await _errorService.GetErrorResponse(request);
         }
-
-        public override async Task<ErrorResponse> GetErrorResponse(ErrorRequest request, ServerCallContext context)
+        catch (Exception e)
         {
-            try
-            {
-                return await _errorService.GetErrorResponse(request);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error occurred: {e.StackTrace}");
-                throw;
-            }
+            _logger.LogError($"Error occurred: {e.StackTrace}");
+            throw;
         }
     }
 }
